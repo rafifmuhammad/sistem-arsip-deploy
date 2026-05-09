@@ -5,12 +5,35 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
   header("Location: /sistem-arsip/auth");
   exit;
 }
+
+include '../../functions/function.php';
+
+$categories = query("SELECT * FROM tb_kategori");
+
+if (isset($_POST['tambah'])) {
+  if (addCategory($_POST) > 0) {
+    $_SESSION["flash"] = [
+      "icon" => "success",
+      "title" => "Berhasil",
+      "text" => "Kategori berhasil ditambahkan."
+    ];
+  } else {
+    $_SESSION["flash"] = [
+      "icon" => "error",
+      "title" => "Gagal",
+      "text" => "Kategori gagal ditambahkan."
+    ];
+  }
+
+  header("Location: /sistem-arsip/categories/");
+  exit;
+}
 ?>
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Arsipan - Manajemen Pengguna Sistem Arsip</title>
+    <title>Arsipan - Kategori Sistem Arsip</title>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
@@ -23,34 +46,34 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico" />
+    <link rel="shortcut icon" href="/sistem-arsip/assets/images/favicon.ico" />
 
     <!-- jvectormap -->
     <link
-      href="./plugins/jvectormap/jquery-jvectormap-2.0.2.css"
+      href="/sistem-arsip/plugins/jvectormap/jquery-jvectormap-2.0.2.css"
       rel="stylesheet"
     />
 
     <!-- App css -->
     <link
-      href="assets/css/bootstrap.min.css"
+      href="/sistem-arsip/assets/css/bootstrap.min.css"
       rel="stylesheet"
       type="text/css"
     />
-    <link href="assets/css/jquery-ui.min.css" rel="stylesheet" />
-    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="/sistem-arsip/assets/css/jquery-ui.min.css" rel="stylesheet" />
+    <link href="/sistem-arsip/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
     <link
-      href="assets/css/metisMenu.min.css"
+      href="/sistem-arsip/assets/css/metisMenu.min.css"
       rel="stylesheet"
       type="text/css"
     />
     <link
-      href="./plugins/daterangepicker/daterangepicker.css"
+      href="/sistem-arsip/plugins/daterangepicker/daterangepicker.css"
       rel="stylesheet"
       type="text/css"
     />
-    <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="./styles/style.css" />
+    <link href="/sistem-arsip/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/sistem-arsip/styles/style.css" />
   </head>
 
   <body class="dark-sidenav">
@@ -61,19 +84,19 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
         <a href="/sistem-arsip/dashboard/" class="logo">
           <span>
             <img
-              src="assets/images/logo-sm.png"
+              src="/sistem-arsip/assets/images/logo-sm.png"
               alt="logo-small"
               class="logo-sm"
             />
           </span>
           <span>
             <img
-              src="assets/images/logo.png"
+              src="/sistem-arsip/assets/images/logo.png"
               alt="logo-large"
               class="logo-lg logo-light"
             />
             <img
-              src="assets/images/logo-dark.png"
+              src="/sistem-arsip/assets/images/logo-dark.png"
               alt="logo-large"
               class="logo-lg logo-dark"
             />
@@ -210,7 +233,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
                     <div class="media">
                       <div class="avatar-md bg-soft-primary">
                         <img
-                          src="assets/images/users/user-4.jpg"
+                          src="/sistem-arsip/assets/images/users/user-4.jpg"
                           alt=""
                           class="thumb-sm rounded-circle"
                         />
@@ -261,7 +284,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
                     <div class="media">
                       <div class="avatar-md bg-soft-primary">
                         <img
-                          src="assets/images/users/user-5.jpg"
+                          src="/sistem-arsip/assets/images/users/user-5.jpg"
                           alt=""
                           class="thumb-sm rounded-circle"
                         />
@@ -326,7 +349,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
               >
                 <span class="ml-1 nav-user-name hidden-sm">Admin</span>
                 <img
-                  src="assets/images/users/user-5.jpg"
+                  src="/sistem-arsip/assets/images/users/user-5.jpg"
                   alt="profile-user"
                   class="rounded-circle"
                 />
@@ -361,13 +384,13 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
             <div class="page-title-box">
               <div class="row">
                 <div class="col">
-                  <h4 class="page-title">Manajemen Pengguna</h4>
+                  <h4 class="page-title">Kategori</h4>
                   <ol class="breadcrumb">
                     <!-- An Unactive Breadcrumb -->
                     <!-- <li class="breadcrumb-item">
                         <a href="javascript:void(0);">Dastyle</a>
                       </li> -->
-                    <li class="breadcrumb-item active">Manajemen Pengguna</li>
+                    <li class="breadcrumb-item active">Kategori</li>
                   </ol>
                 </div>
                 <!--end col-->
@@ -385,7 +408,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title">Data Pengguna</h4>
+                <h4 class="card-title">Tabel Kategori</h4>
               </div>
               <!--end card-header-->
 
@@ -417,7 +440,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
                       <div class="modal-content">
                         <div class="modal-header">
                           <h6 class="modal-title m-0" id="dataModalLabel">
-                            Tambah Data Pengguna
+                            Tambah Kategori
                           </h6>
                           <button
                             type="button"
@@ -434,34 +457,24 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
                         <form action="" method="post">
                           <div class="modal-body">
                             <div class="form-group">
-                              <label for="username">Username</label>
+                              <label for="kode">Kode Kategori</label>
                               <input
                                 type="text"
                                 class="form-control"
-                                id="username"
-                                name="username"
-                                placeholder="Masukkan username"
+                                id="kode_kategori"
+                                name="kode_kategori"
+                                placeholder="Masukkan kode kategori (Contoh: ADM)"
                                 required
                               />
                             </div>
                             <div class="form-group">
-                              <label for="nama">Nama Lengkap</label>
+                              <label for="nama">Nama Kategori</label>
                               <input
                                 type="text"
                                 class="form-control"
-                                id="nama"
-                                name="nama"
-                                placeholder="Masukkan lengkap"
-                                required
-                              />
-                            </div>
-                            <div class="form-group">
-                              <label for="password">Password</label>
-                              <input
-                                type="password"
-                                class="form-control"
-                                id="password"
-                                placeholder="Masukkan password"
+                                id="nama_kategori"
+                                name="nama_kategori"
+                                placeholder="Masukkan nama kategori"
                                 required
                               />
                             </div>
@@ -477,6 +490,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
                             </button>
                             <button
                               type="submit"
+                              name="tambah"
                               class="btn btn-primary btn-sm"
                             >
                               Tambah
@@ -503,73 +517,27 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
                 >
                   <thead class="bg-soft-primary">
                     <tr>
-                      <th class="text-center">ID Pengguna</th>
-                      <th class="text-center">Username</th>
-                      <th class="text-center">Nama Lengkap</th>
-                      <th class="text-center">Jabatan</th>
-                      <th class="text-center">Dibuat Pada</th>
-                      <th class="text-center">Ubah</th>
+                      <th class="text-center">No.</th>
+                      <th class="text-center">ID Kategori</th>
+                      <th class="text-center">Kode Kategori</th>
+                      <th class="text-center">Nama Kategori</th>
                       <th class="text-center">Hapus</th>
                     </tr>
                   </thead>
                   <tbody>
+                    <?php $i = 1; foreach ($categories as $category) : ?>
                     <tr>
-                      <td class="text-center">IDUSER112</td>
-                      <td>hasnanhasnan</td>
-                      <td>Hasnan Alfan Shuri</td>
-                      <td>Pegawai</td>
-                      <td class="text-center">2011/04/25</td>
+                      <td class="text-center"><?= $i; ?></td>
+                      <td><?= $category['id_kategori']; ?></td>
+                      <td class="text-center"><?= $category['kode_kategori']; ?></td>
+                      <td><?= $category['nama_kategori']; ?></td>
                       <td class="text-center">
-                        <a
-                          href="/sistem-arsip/users/"
-                          class="btn btn-warning btn-sm"
-                          ><i class="mdi mdi-pencil"></i
-                        ></a>
-                      </td>
-                      <td class="text-center">
-                        <a href="" class="btn btn-danger btn-sm"
+                        <a href="#" class="btn btn-danger btn-sm tombol-hapus" data-href="/sistem-arsip/categories/<?= $category['id_kategori']; ?>/delete/"
                           ><i class="mdi mdi-delete"></i
                         ></a>
                       </td>
                     </tr>
-                    <tr>
-                      <td class="text-center">IDUSER113</td>
-                      <td>atasbawah</td>
-                      <td>Dimas Mulyadi</td>
-                      <td>Pegawai</td>
-                      <td class="text-center">2011/04/25</td>
-                      <td class="text-center">
-                        <a
-                          href="/sistem-arsip/users/"
-                          class="btn btn-warning btn-sm"
-                          ><i class="mdi mdi-pencil"></i
-                        ></a>
-                      </td>
-                      <td class="text-center">
-                        <a href="" class="btn btn-danger btn-sm"
-                          ><i class="mdi mdi-delete"></i
-                        ></a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-center">IDUSER114</td>
-                      <td>alfayad</td>
-                      <td>Al Fayad</td>
-                      <td>Kepala Desa</td>
-                      <td class="text-center">2011/04/25</td>
-                      <td class="text-center">
-                        <a
-                          href="/sistem-arsip/users/"
-                          class="btn btn-warning btn-sm"
-                          ><i class="mdi mdi-pencil"></i
-                        ></a>
-                      </td>
-                      <td class="text-center">
-                        <a href="" class="btn btn-danger btn-sm"
-                          ><i class="mdi mdi-delete"></i
-                        ></a>
-                      </td>
-                    </tr>
+                    <?php $i++; endforeach; ?>
                   </tbody>
                 </table>
               </div>
@@ -592,40 +560,82 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
     <!-- end page-wrapper -->
 
     <!-- jQuery  -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/metismenu.min.js"></script>
-    <script src="assets/js/waves.js"></script>
-    <script src="assets/js/feather.min.js"></script>
-    <script src="assets/js/simplebar.min.js"></script>
-    <script src="assets/js/jquery-ui.min.js"></script>
-    <script src="assets/js/moment.js"></script>
-    <script src="./plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="/sistem-arsip/assets/js/jquery.min.js"></script>
+    <script src="/sistem-arsip/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/sistem-arsip/assets/js/metismenu.min.js"></script>
+    <script src="/sistem-arsip/assets/js/waves.js"></script>
+    <script src="/sistem-arsip/assets/js/feather.min.js"></script>
+    <script src="/sistem-arsip/assets/js/simplebar.min.js"></script>
+    <script src="/sistem-arsip/assets/js/jquery-ui.min.js"></script>
+    <script src="/sistem-arsip/assets/js/moment.js"></script>
+    <script src="/sistem-arsip/plugins/daterangepicker/daterangepicker.js"></script>
 
     <!-- Required datatable js -->
-    <script src="./plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="./plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/dataTables.bootstrap4.min.js"></script>
     <!-- Buttons examples -->
-    <script src="./plugins/datatables/dataTables.buttons.min.js"></script>
-    <script src="./plugins/datatables/buttons.bootstrap4.min.js"></script>
-    <script src="./plugins/datatables/jszip.min.js"></script>
-    <script src="./plugins/datatables/pdfmake.min.js"></script>
-    <script src="./plugins/datatables/vfs_fonts.js"></script>
-    <script src="./plugins/datatables/buttons.html5.min.js"></script>
-    <script src="./plugins/datatables/buttons.print.min.js"></script>
-    <script src="./plugins/datatables/buttons.colVis.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/dataTables.buttons.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/buttons.bootstrap4.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/jszip.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/pdfmake.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/vfs_fonts.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/buttons.html5.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/buttons.print.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/buttons.colVis.min.js"></script>
 
     <!-- Responsive examples -->
-    <script src="./plugins/datatables/dataTables.responsive.min.js"></script>
-    <script src="./plugins/datatables/responsive.bootstrap4.min.js"></script>
-    <script src="assets/pages/jquery.datatable.init.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/dataTables.responsive.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/responsive.bootstrap4.min.js"></script>
+    <script src="/sistem-arsip/assets/pages/jquery.datatable.init.js"></script>
 
     <!-- App js -->
-    <script src="assets/js/app.js"></script>
+    <script src="/sistem-arsip/assets/js/app.js"></script>
 
     <!-- Datatables -->
     <script>
       $("#datatable").DataTable();
+    </script>
+
+    <!-- SweatAlert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script>
+      <?php if (isset($_SESSION["flash"])) : ?>
+      swal({
+          title: <?= json_encode($_SESSION["flash"]["title"]); ?>,
+          text: <?= json_encode($_SESSION["flash"]["text"]); ?>,
+          icon: <?= json_encode($_SESSION["flash"]["icon"]); ?>,
+          button: "OK",
+      });
+      <?php endif; ?>
+
+      <?php if (isset($_SESSION["flash"])) : ?>
+          swal({
+            title: <?= json_encode($_SESSION["flash"]["title"]); ?>,
+            text: <?= json_encode($_SESSION["flash"]["text"]); ?>,
+            icon: <?= json_encode($_SESSION["flash"]["icon"]); ?>,
+            button: "OK",
+          });
+        <?php unset($_SESSION["flash"]); ?>
+      <?php endif; ?>
+
+      $('.tombol-hapus').on('click', function(e) {
+        e.preventDefault();
+
+        const href = $(this).data('href');
+
+        swal({
+          title: "Yakin?",
+            text: "Data pengguna akan dihapus.",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+        if (willDelete) {
+              document.location.href = href;
+            }
+          });
+        });
     </script>
   </body>
 </html>

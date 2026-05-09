@@ -1,0 +1,85 @@
+RewriteEngine On
+RewriteBase /sistem-arsip/
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/index\.php[?\s]
+RewriteRule ^index\.php$ ./ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/auth/auth\.php[?\s]
+RewriteRule ^views/auth/auth\.php$ auth/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/dashboard/dashboard\.php[?\s]
+RewriteRule ^views/dashboard/dashboard\.php$ dashboard/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/users/user_management\.php[?\s]
+RewriteRule ^views/users/user_management\.php$ users/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/letters_incoming/letters_incoming\.php[?\s]
+RewriteRule ^views/letters_incoming/letters_incoming\.php$ incoming/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/letters_outgoing/letters_outgoing\.php[?\s]
+RewriteRule ^views/letters_outgoing/letters_outgoing\.php$ outgoing/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/archives/archives\.php[?\s]
+RewriteRule ^views/archives/archives\.php$ archives/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/categories/categories\.php[?\s]
+RewriteRule ^views/categories/categories\.php$ categories/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/letters_incoming/letters_add_incoming\.php[?\s]
+RewriteRule ^views/letters_incoming/letters_add_incoming\.php$ incoming/add/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/letters_outgoing/letters_add_outgoing\.php[?\s]
+RewriteRule ^views/letters_outgoing/letters_add_outgoing\.php$ outgoing/add/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/actions/users/user_edit\.php\?id_user=([^&\s]+)
+RewriteRule ^actions/users/user_edit\.php$ users/%1/edit/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/letters_incoming/letters_edit_incoming\.php\?id_surat_masuk=([^&\s]+)
+RewriteRule ^views/letters_incoming/letters_edit_incoming\.php$ incoming/%1/edit/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/letters_outgoing/letters_edit_outgoing\.php\?id_surat_keluar=([^&\s]+)
+RewriteRule ^views/letters_outgoing/letters_edit_outgoing\.php$ outgoing/%1/edit/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/letters_detail/letters_detail\.php\?id_surat_masuk=([^&\s]+)
+RewriteRule ^views/letters_detail/letters_detail\.php$ incoming/%1/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/views/letters_detail/letters_detail\.php\?id_surat_keluar=([^&\s]+)
+RewriteRule ^views/letters_detail/letters_detail\.php$ outgoing/%1/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+sistem-arsip/actions/files/download\.php\?id_versi=([^&\s]+)&type=([^&\s]+)
+RewriteRule ^actions/files/download\.php$ files/download/%2/%1/ [R=302,L]
+
+RewriteRule ^auth/?$ views/auth/auth.php [L,QSA]
+RewriteRule ^dashboard/?$ views/dashboard/dashboard.php [L,QSA]
+
+RewriteRule ^users/?$ views/users/user_management.php [L,QSA]
+RewriteRule ^users/([^/]+)/edit/?$ actions/users/user_edit.php?id_user=$1 [L,QSA]
+RewriteRule ^users/([^/]+)/delete/?$ actions/users/user_delete.php?id_user=$1 [L,QSA]
+
+RewriteRule ^incoming/?$ views/letters_incoming/letters_incoming.php [L,QSA]
+RewriteRule ^incoming/add/?$ views/letters_incoming/letters_add_incoming.php [L,QSA]
+RewriteRule ^incoming/([^/]+)/edit/?$ views/letters_incoming/letters_edit_incoming.php?id_surat_masuk=$1 [L,QSA]
+RewriteRule ^incoming/([^/]+)/delete/?$ actions/letters_incoming/letters_delete_incoming.php?id_surat_masuk=$1 [L,QSA]
+RewriteRule ^incoming/([^/]+)/?$ views/letters_detail/letters_detail.php?id_surat_masuk=$1&type=surat_masuk [L,QSA]
+
+RewriteRule ^outgoing/?$ views/letters_outgoing/letters_outgoing.php [L,QSA]
+RewriteRule ^outgoing/add/?$ views/letters_outgoing/letters_add_outgoing.php [L,QSA]
+RewriteRule ^outgoing/([^/]+)/edit/?$ views/letters_outgoing/letters_edit_outgoing.php?id_surat_keluar=$1 [L,QSA]
+RewriteRule ^outgoing/([^/]+)/delete/?$ actions/letters_outgoing/letters_delete_outgoing.php?id_surat_keluar=$1 [L,QSA]
+RewriteRule ^outgoing/([^/]+)/?$ views/letters_detail/letters_detail.php?id_surat_keluar=$1&type=surat_keluar [L,QSA]
+
+RewriteRule ^archives/?$ views/archives/archives.php [L,QSA]
+RewriteRule ^archives/report/?$ actions/report/archives_report.php [L,QSA]
+
+RewriteRule ^categories/?$ views/categories/categories.php [L,QSA]
+RewriteRule ^categories/([^/]+)/delete/?$ actions/categories/categories_delete.php?id_kategori=$1 [L,QSA]
+
+RewriteRule ^letters/number/?$ actions/letters/letters_generate_number.php [L,QSA]
+RewriteRule ^letters/validate/surat_masuk/([^/]+)/?$ actions/letters/letters_validation.php?type=surat_masuk&id_surat_masuk=$1 [L,QSA]
+RewriteRule ^letters/validate/surat_keluar/([^/]+)/?$ actions/letters/letters_validation.php?type=surat_keluar&id_surat_keluar=$1 [L,QSA]
+RewriteRule ^letters/approve/surat_masuk/([^/]+)/?$ actions/letters/letters_approve.php?type=surat_masuk&id_surat_masuk=$1 [L,QSA]
+RewriteRule ^letters/approve/surat_keluar/([^/]+)/?$ actions/letters/letters_approve.php?type=surat_keluar&id_surat_keluar=$1 [L,QSA]
+RewriteRule ^letters/version/surat_masuk/([^/]+)/([^/]+)/?$ actions/letters/letters_apply_version.php?type=surat_masuk&id_surat_masuk=$1&id_versi=$2 [L,QSA]
+RewriteRule ^letters/version/surat_keluar/([^/]+)/([^/]+)/?$ actions/letters/letters_apply_version.php?type=surat_keluar&id_surat_keluar=$1&id_versi=$2 [L,QSA]
+
+RewriteRule ^files/download/(surat_masuk|surat_keluar)/([^/]+)/?$ actions/files/download.php?type=$1&id_versi=$2 [L,QSA]

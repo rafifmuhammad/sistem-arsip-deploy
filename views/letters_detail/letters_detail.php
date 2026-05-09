@@ -5,12 +5,33 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
   header("Location: /sistem-arsip/auth");
   exit;
 }
+
+include '../../functions/function.php';
+
+$type = $_GET['type'];
+$id_surat = '';
+
+if ($type === 'surat_masuk') {
+  $id_surat = $_GET['id_surat_masuk'];
+
+  $letter = query("SELECT * FROM tb_surat_masuk
+    JOIN tb_surat_masuk_versi ON tb_surat_masuk.id_versi_aktif = tb_surat_masuk_versi.id_versi
+    WHERE tb_surat_masuk.id_surat_masuk = '$id_surat'
+  ")[0];
+} else {
+  $id_surat = $_GET['id_surat_keluar'];
+
+  $letter = query("SELECT * FROM tb_surat_keluar
+    JOIN tb_surat_keluar_versi ON tb_surat_keluar.id_versi_aktif = tb_surat_keluar_versi.id_versi
+    WHERE tb_surat_keluar.id_surat_keluar = '$id_surat'
+  ")[0];
+}
 ?>
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Arsipan - Manajemen Pengguna Sistem Arsip</title>
+    <title>Arsipan - Detail Surat Sistem Arsip</title>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
@@ -23,34 +44,49 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico" />
+    <link rel="shortcut icon" href="/sistem-arsip/assets/images/favicon.ico" />
 
     <!-- jvectormap -->
     <link
-      href="./plugins/jvectormap/jquery-jvectormap-2.0.2.css"
+      href="/sistem-arsip/plugins/jvectormap/jquery-jvectormap-2.0.2.css"
       rel="stylesheet"
     />
 
     <!-- App css -->
     <link
-      href="assets/css/bootstrap.min.css"
+      href="/sistem-arsip/assets/css/bootstrap.min.css"
       rel="stylesheet"
       type="text/css"
     />
-    <link href="assets/css/jquery-ui.min.css" rel="stylesheet" />
-    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="/sistem-arsip/assets/css/jquery-ui.min.css" rel="stylesheet" />
+    <link href="/sistem-arsip/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
     <link
-      href="assets/css/metisMenu.min.css"
+      href="/sistem-arsip/assets/css/metisMenu.min.css"
       rel="stylesheet"
       type="text/css"
     />
     <link
-      href="./plugins/daterangepicker/daterangepicker.css"
+      href="/sistem-arsip/plugins/daterangepicker/daterangepicker.css"
       rel="stylesheet"
       type="text/css"
     />
-    <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="./styles/style.css" />
+    <link href="/sistem-arsip/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/sistem-arsip/styles/style.css" />
+    <style>
+      .section-divider {
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+      }
+      .qr-frame {
+        width: 180px;
+        height: 180px;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px dashed rgba(255, 255, 255, 0.15);
+      }
+      .dashed-panel {
+        border: 1px dashed rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.04);
+      }
+    </style>
   </head>
 
   <body class="dark-sidenav">
@@ -61,19 +97,19 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
         <a href="/sistem-arsip/dashboard/" class="logo">
           <span>
             <img
-              src="assets/images/logo-sm.png"
+              src="/sistem-arsip/assets/images/logo-sm.png"
               alt="logo-small"
               class="logo-sm"
             />
           </span>
           <span>
             <img
-              src="assets/images/logo.png"
+              src="/sistem-arsip/assets/images/logo.png"
               alt="logo-large"
               class="logo-lg logo-light"
             />
             <img
-              src="assets/images/logo-dark.png"
+              src="/sistem-arsip/assets/images/logo-dark.png"
               alt="logo-large"
               class="logo-lg logo-dark"
             />
@@ -210,7 +246,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
                     <div class="media">
                       <div class="avatar-md bg-soft-primary">
                         <img
-                          src="assets/images/users/user-4.jpg"
+                          src="/sistem-arsip/assets/images/users/user-4.jpg"
                           alt=""
                           class="thumb-sm rounded-circle"
                         />
@@ -261,7 +297,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
                     <div class="media">
                       <div class="avatar-md bg-soft-primary">
                         <img
-                          src="assets/images/users/user-5.jpg"
+                          src="/sistem-arsip/assets/images/users/user-5.jpg"
                           alt=""
                           class="thumb-sm rounded-circle"
                         />
@@ -326,7 +362,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
               >
                 <span class="ml-1 nav-user-name hidden-sm">Admin</span>
                 <img
-                  src="assets/images/users/user-5.jpg"
+                  src="/sistem-arsip/assets/images/users/user-5.jpg"
                   alt="profile-user"
                   class="rounded-circle"
                 />
@@ -361,13 +397,20 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
             <div class="page-title-box">
               <div class="row">
                 <div class="col">
-                  <h4 class="page-title">Manajemen Pengguna</h4>
+                  <h4 class="page-title">Detail Surat</h4>
                   <ol class="breadcrumb">
                     <!-- An Unactive Breadcrumb -->
-                    <!-- <li class="breadcrumb-item">
-                        <a href="javascript:void(0);">Dastyle</a>
-                      </li> -->
-                    <li class="breadcrumb-item active">Manajemen Pengguna</li>
+                    <li class="breadcrumb-item">
+                      <a href="
+                        <?php echo ($type === 'surat_masuk') 
+                        ? '/sistem-arsip/incoming/' 
+                        : '/sistem-arsip/outgoing/'; ?>"
+                      ><?php echo ($type === 'surat_masuk') 
+                        ? "Surat Masuk" 
+                        : "Surat Keluar"; ?></a
+                      >
+                    </li>
+                    <li class="breadcrumb-item active">Detail Surat</li>
                   </ol>
                 </div>
                 <!--end col-->
@@ -380,204 +423,125 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
         </div>
         <!--end row-->
 
-        <!-- Tabel Manajemen Pengguna -->
         <div class="row">
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title">Data Pengguna</h4>
+                <div class="row align-items-center">
+                  <div class="col">
+                    <h4 class="card-title">Detail Surat</h4>
+                  </div>
+                  <!--end col-->
+                </div>
+                <!--end row-->
               </div>
               <!--end card-header-->
-
               <div class="card-body">
-                <!-- Button -->
-                <div>
-                  <button
-                    type="button"
-                    class="btn btn-outline-primary btn-sm mb-2"
-                    data-toggle="modal"
-                    data-target="#dataModal"
-                  >
-                    <i class="mdi mdi-plus-circle"></i> Tambah
-                  </button>
-
-                  <!-- Modal -->
-                  <div
-                    class="modal fade"
-                    id="dataModal"
-                    tabindex="-1"
-                    role="dialog"
-                    aria-labelledby="dataModalLabel"
-                    aria-hidden="true"
-                  >
-                    <div
-                      class="modal-dialog modal-dialog-centered"
-                      role="document"
-                    >
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h6 class="modal-title m-0" id="dataModalLabel">
-                            Tambah Data Pengguna
-                          </h6>
-                          <button
-                            type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close"
-                          >
-                            <span aria-hidden="true"
-                              ><i class="la la-times"></i
-                            ></span>
-                          </button>
-                        </div>
-                        <!--end modal-header-->
-                        <form action="" method="post">
-                          <div class="modal-body">
-                            <div class="form-group">
-                              <label for="username">Username</label>
-                              <input
-                                type="text"
-                                class="form-control"
-                                id="username"
-                                name="username"
-                                placeholder="Masukkan username"
-                                required
-                              />
-                            </div>
-                            <div class="form-group">
-                              <label for="nama">Nama Lengkap</label>
-                              <input
-                                type="text"
-                                class="form-control"
-                                id="nama"
-                                name="nama"
-                                placeholder="Masukkan lengkap"
-                                required
-                              />
-                            </div>
-                            <div class="form-group">
-                              <label for="password">Password</label>
-                              <input
-                                type="password"
-                                class="form-control"
-                                id="password"
-                                placeholder="Masukkan password"
-                                required
-                              />
-                            </div>
-                          </div>
-                          <!--end modal-body-->
-                          <div class="modal-footer">
-                            <button
-                              type="button"
-                              class="btn btn-secondary btn-sm"
-                              data-dismiss="modal"
-                            >
-                              Tutup
-                            </button>
-                            <button
-                              type="submit"
-                              class="btn btn-primary btn-sm"
-                            >
-                              Tambah
-                            </button>
-                          </div>
-                        </form>
-                        <!--end modal-footer-->
-                      </div>
-                      <!--end modal-content-->
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="table-responsive">
+                      <table class="table mb-0">
+                        <tbody>
+                          <tr>
+                            <th class="w-25 text-left">Nomor Surat</th>
+                            <td>: <?= $letter['nomor_surat']; ?></td>
+                          </tr>
+                          <?php if ($type === 'surat_masuk') : ?>
+                          <tr>
+                            <th class="w-25 text-left">Sumber Surat</th>
+                            <td>: <?= $letter['sumber_surat']; ?></td>
+                          </tr>
+                          <?php endif; ?>
+                          <?php if ($type === 'surat_masuk') : ?>
+                          <tr>
+                            <th class="w-25 text-left">Tanggal Terima</th>
+                            <td>: <?= $letter['tanggal_terima']; ?></td>
+                          </tr>
+                          <?php endif; ?>
+                          <?php if ($type === 'surat_keluar') : ?>
+                          <tr>
+                            <th class="w-25 text-left">Tanggal Keluar</th>
+                            <td>: <?= $letter['tanggal_keluar']; ?></td>
+                          </tr>
+                          <?php endif; ?>
+                          <tr>
+                            <th class="w-25 text-left">Perihal</th>
+                            <td>: <?= $letter['perihal_surat']; ?></td>
+                          </tr>
+                          <tr>
+                            <th class="w-25 text-left">Keterangan</th>
+                            <td>: <?= $letter['keterangan_surat']; ?></td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
-                    <!--end modal-dialog-->
+                    <div
+                      class="border-bottom mb-3"
+                      style="
+                        border-style: dashed !important;
+                        border-color: rgba(255, 255, 255, 0.15);
+                      "
+                    ></div>
+                    <div class="text-left mb-4">
+                      <a
+                        href="/sistem-arsip/files/download/<?= $type; ?>/<?= $letter['id_versi_aktif']; ?>/"
+                        class="btn btn-outline-primary btn-sm"
+                      >
+                        <i class="mdi mdi-download mr-1"></i>Unduh
+                      </a>
+                    </div>
+                    <div class="section-divider mb-3"></div>
+                    <div class="border-bottom section-divider pb-2 mb-3">
+                      <h5 class="mb-0">Bagikan</h5>
+                    </div>
+                    <div class="text-center mb-3">
+                      <div id="qrcode" class="mx-auto qr-frame"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3">
+                      <a href="#" class="btn btn-outline-secondary btn-sm mr-2">
+                        <i class="mdi mdi-content-save-outline mr-1"></i>Simpan
+                        Gambar
+                      </a>
+                      <a
+                        href="mailto:?subject=Surat%20Detail&body=Lihat%20surat%20di%20sini"
+                        class="btn btn-outline-danger btn-sm mr-2"
+                      >
+                        <i class="mdi mdi-email-outline mr-1"></i>Email
+                      </a>
+                      <a
+                        href="https://wa.me/?text=Lihat%20surat%20ini"
+                        target="_blank"
+                        class="btn btn-outline-success btn-sm"
+                      >
+                        <i class="mdi mdi-whatsapp mr-1"></i>WhatsApp
+                      </a>
+                    </div>
                   </div>
-                  <!--end modal-->
+                  <!--end col-->
+                  <div class="col-lg-5 ml-auto">
+                    <div class="card shadow-none border">
+                      <div class="card-body p-0">
+                        <div class="embed-responsive embed-responsive-4by3">
+                          <iframe
+                            src="/sistem-arsip/<?= $letter['file']; ?>"
+                            class="embed-responsive-item"
+                            allowfullscreen
+                          ></iframe>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--end col-->
                 </div>
-
-                <table
-                  id="datatable"
-                  class="table table-striped table-bordered table-hover dt-responsive nowrap"
-                  style="
-                    border-collapse: collapse;
-                    border-spacing: 0;
-                    width: 100%;
-                  "
-                >
-                  <thead class="bg-soft-primary">
-                    <tr>
-                      <th class="text-center">ID Pengguna</th>
-                      <th class="text-center">Username</th>
-                      <th class="text-center">Nama Lengkap</th>
-                      <th class="text-center">Jabatan</th>
-                      <th class="text-center">Dibuat Pada</th>
-                      <th class="text-center">Ubah</th>
-                      <th class="text-center">Hapus</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="text-center">IDUSER112</td>
-                      <td>hasnanhasnan</td>
-                      <td>Hasnan Alfan Shuri</td>
-                      <td>Pegawai</td>
-                      <td class="text-center">2011/04/25</td>
-                      <td class="text-center">
-                        <a
-                          href="/sistem-arsip/users/"
-                          class="btn btn-warning btn-sm"
-                          ><i class="mdi mdi-pencil"></i
-                        ></a>
-                      </td>
-                      <td class="text-center">
-                        <a href="" class="btn btn-danger btn-sm"
-                          ><i class="mdi mdi-delete"></i
-                        ></a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-center">IDUSER113</td>
-                      <td>atasbawah</td>
-                      <td>Dimas Mulyadi</td>
-                      <td>Pegawai</td>
-                      <td class="text-center">2011/04/25</td>
-                      <td class="text-center">
-                        <a
-                          href="/sistem-arsip/users/"
-                          class="btn btn-warning btn-sm"
-                          ><i class="mdi mdi-pencil"></i
-                        ></a>
-                      </td>
-                      <td class="text-center">
-                        <a href="" class="btn btn-danger btn-sm"
-                          ><i class="mdi mdi-delete"></i
-                        ></a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-center">IDUSER114</td>
-                      <td>alfayad</td>
-                      <td>Al Fayad</td>
-                      <td>Kepala Desa</td>
-                      <td class="text-center">2011/04/25</td>
-                      <td class="text-center">
-                        <a
-                          href="/sistem-arsip/users/"
-                          class="btn btn-warning btn-sm"
-                          ><i class="mdi mdi-pencil"></i
-                        ></a>
-                      </td>
-                      <td class="text-center">
-                        <a href="" class="btn btn-danger btn-sm"
-                          ><i class="mdi mdi-delete"></i
-                        ></a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <!--end row-->
               </div>
+              <!--end card-body-->
             </div>
+            <!--end card-->
           </div>
-          <!-- end col -->
+          <!--end col-->
         </div>
-        <!-- end row -->
+        <!--end row-->
 
         <footer class="footer text-center text-sm-left">
           &copy; 2026 Arsipan
@@ -592,36 +556,53 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
     <!-- end page-wrapper -->
 
     <!-- jQuery  -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/metismenu.min.js"></script>
-    <script src="assets/js/waves.js"></script>
-    <script src="assets/js/feather.min.js"></script>
-    <script src="assets/js/simplebar.min.js"></script>
-    <script src="assets/js/jquery-ui.min.js"></script>
-    <script src="assets/js/moment.js"></script>
-    <script src="./plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="/sistem-arsip/assets/js/jquery.min.js"></script>
+    <script src="/sistem-arsip/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/sistem-arsip/assets/js/metismenu.min.js"></script>
+    <script src="/sistem-arsip/assets/js/waves.js"></script>
+    <script src="/sistem-arsip/assets/js/feather.min.js"></script>
+    <script src="/sistem-arsip/assets/js/simplebar.min.js"></script>
+    <script src="/sistem-arsip/assets/js/jquery-ui.min.js"></script>
+    <script src="/sistem-arsip/assets/js/moment.js"></script>
+    <script src="/sistem-arsip/plugins/daterangepicker/daterangepicker.js"></script>
 
     <!-- Required datatable js -->
-    <script src="./plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="./plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/dataTables.bootstrap4.min.js"></script>
     <!-- Buttons examples -->
-    <script src="./plugins/datatables/dataTables.buttons.min.js"></script>
-    <script src="./plugins/datatables/buttons.bootstrap4.min.js"></script>
-    <script src="./plugins/datatables/jszip.min.js"></script>
-    <script src="./plugins/datatables/pdfmake.min.js"></script>
-    <script src="./plugins/datatables/vfs_fonts.js"></script>
-    <script src="./plugins/datatables/buttons.html5.min.js"></script>
-    <script src="./plugins/datatables/buttons.print.min.js"></script>
-    <script src="./plugins/datatables/buttons.colVis.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/dataTables.buttons.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/buttons.bootstrap4.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/jszip.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/pdfmake.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/vfs_fonts.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/buttons.html5.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/buttons.print.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/buttons.colVis.min.js"></script>
 
     <!-- Responsive examples -->
-    <script src="./plugins/datatables/dataTables.responsive.min.js"></script>
-    <script src="./plugins/datatables/responsive.bootstrap4.min.js"></script>
-    <script src="assets/pages/jquery.datatable.init.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/dataTables.responsive.min.js"></script>
+    <script src="/sistem-arsip/plugins/datatables/responsive.bootstrap4.min.js"></script>
+    <script src="/sistem-arsip/assets/pages/jquery.datatable.init.js"></script>
 
     <!-- App js -->
-    <script src="assets/js/app.js"></script>
+    <script src="/sistem-arsip/assets/js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var qrcodeEl = document.getElementById("qrcode");
+        if (qrcodeEl) {
+          new QRCode(qrcodeEl, {
+            text: window.location.href,
+            width: 180,
+            height: 180,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H,
+          });
+        }
+      });
+    </script>
 
     <!-- Datatables -->
     <script>

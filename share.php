@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
+  header("Location: /sistem-arsip/auth");
+  exit;
+}
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -19,7 +27,7 @@
 
     <!-- jvectormap -->
     <link
-      href="../plugins/jvectormap/jquery-jvectormap-2.0.2.css"
+      href="./plugins/jvectormap/jquery-jvectormap-2.0.2.css"
       rel="stylesheet"
     />
 
@@ -37,7 +45,7 @@
       type="text/css"
     />
     <link
-      href="../plugins/daterangepicker/daterangepicker.css"
+      href="./plugins/daterangepicker/daterangepicker.css"
       rel="stylesheet"
       type="text/css"
     />
@@ -65,7 +73,7 @@
     <div class="left-sidenav">
       <!-- LOGO -->
       <div class="brand">
-        <a href="dashboard/crm-index.php" class="logo">
+        <a href="/sistem-arsip/dashboard/" class="logo">
           <span>
             <img
               src="assets/images/logo-sm.png"
@@ -92,21 +100,23 @@
         <ul class="metismenu left-sidenav-menu">
           <li class="menu-label mt-0">Menu Utama</li>
           <li>
-            <a href="./index.php">
+            <a href="/sistem-arsip/dashboard/">
               <i data-feather="home" class="align-self-center menu-icon"></i
               ><span>Dashboard</span></a
             >
-            <a href="./user_management.php" class="link-active">
+            <?php if ($_SESSION['user']['role'] === 'admin') : ?>
+            <a href="/sistem-arsip/users/" class="link-active">
               <i data-feather="user" class="align-self-center menu-icon"></i
               ><span>Manajemen Pengguna</span></a
             >
+            <?php endif; ?>
           </li>
 
           <hr class="hr-dashed hr-menu" />
           <li class="menu-label my-2">Master</li>
 
           <li>
-            <a href="./letters_incoming.php"
+            <a href="/sistem-arsip/incoming/"
               ><i
                 data-feather="arrow-up-right"
                 class="align-self-center menu-icon"
@@ -115,7 +125,7 @@
             >
           </li>
           <li>
-            <a href="./letters_outgoing.php"
+            <a href="/sistem-arsip/outgoing/"
               ><i
                 data-feather="arrow-down-right"
                 class="align-self-center menu-icon"
@@ -124,23 +134,25 @@
             >
           </li>
           <li>
-            <a href="archives.php"
+            <a href="/sistem-arsip/archives/"
               ><i data-feather="folder" class="align-self-center menu-icon"></i
               ><span>Arsip</span></a
             >
           </li>
+          <?php if ($_SESSION['user']['role'] === 'admin') : ?>
           <li>
-            <a href="./categories.php"
+            <a href="/sistem-arsip/categories/"
               ><i data-feather="package" class="align-self-center menu-icon"></i
               ><span>Kategori</span></a
             >
           </li>
+          <?php endif; ?>
 
           <hr class="hr-dashed hr-menu" />
           <li class="menu-label my-2">Lainnya</li>
 
           <li>
-            <a href="javascript: void(0);"
+            <a href="/sistem-arsip/actions/logout/logout.php"
               ><i data-feather="log-out" class="align-self-center menu-icon"></i
               ><span>Keluar</span></a
             >
@@ -427,7 +439,7 @@
                     ></div>
                     <div class="text-left mb-4">
                       <a
-                        href="assets/documents/sample.pdf"
+                        href="./assets/dummy/Rafif Muhammad_Bebas Administrasi Labor.pdf"
                         class="btn btn-outline-primary btn-sm"
                       >
                         <i class="mdi mdi-download mr-1"></i>Unduh
@@ -508,24 +520,24 @@
     <script src="assets/js/simplebar.min.js"></script>
     <script src="assets/js/jquery-ui.min.js"></script>
     <script src="assets/js/moment.js"></script>
-    <script src="../plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="./plugins/daterangepicker/daterangepicker.js"></script>
 
     <!-- Required datatable js -->
-    <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="../plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="./plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="./plugins/datatables/dataTables.bootstrap4.min.js"></script>
     <!-- Buttons examples -->
-    <script src="../plugins/datatables/dataTables.buttons.min.js"></script>
-    <script src="../plugins/datatables/buttons.bootstrap4.min.js"></script>
-    <script src="../plugins/datatables/jszip.min.js"></script>
-    <script src="../plugins/datatables/pdfmake.min.js"></script>
-    <script src="../plugins/datatables/vfs_fonts.js"></script>
-    <script src="../plugins/datatables/buttons.html5.min.js"></script>
-    <script src="../plugins/datatables/buttons.print.min.js"></script>
-    <script src="../plugins/datatables/buttons.colVis.min.js"></script>
+    <script src="./plugins/datatables/dataTables.buttons.min.js"></script>
+    <script src="./plugins/datatables/buttons.bootstrap4.min.js"></script>
+    <script src="./plugins/datatables/jszip.min.js"></script>
+    <script src="./plugins/datatables/pdfmake.min.js"></script>
+    <script src="./plugins/datatables/vfs_fonts.js"></script>
+    <script src="./plugins/datatables/buttons.html5.min.js"></script>
+    <script src="./plugins/datatables/buttons.print.min.js"></script>
+    <script src="./plugins/datatables/buttons.colVis.min.js"></script>
 
     <!-- Responsive examples -->
-    <script src="../plugins/datatables/dataTables.responsive.min.js"></script>
-    <script src="../plugins/datatables/responsive.bootstrap4.min.js"></script>
+    <script src="./plugins/datatables/dataTables.responsive.min.js"></script>
+    <script src="./plugins/datatables/responsive.bootstrap4.min.js"></script>
     <script src="assets/pages/jquery.datatable.init.js"></script>
 
     <!-- App js -->
@@ -537,7 +549,7 @@
         var qrcodeEl = document.getElementById("qrcode");
         if (qrcodeEl) {
           new QRCode(qrcodeEl, {
-            text: "http://127.0.0.1:5501/letters_detail.html",
+            text: window.location.href,
             width: 180,
             height: 180,
             colorDark: "#000000",

@@ -28,15 +28,40 @@ function addUser($data) {
     $id_user = uniqid();
     $username = htmlspecialchars($data['username']);
     $nama = htmlspecialchars($data['nama']);
-    $password = htmlspecialchars($data['password']);
+    $email = htmlspecialchars($_POST['email']);
+    $password = password_hash(htmlspecialchars($data['password']), PASSWORD_DEFAULT);
     $role = htmlspecialchars($data['role']);
     $created_at = date('Y-m-d');
 
     $query = "INSERT INTO 
-        tb_user(id_user, username, nama, password, role, created_at) 
-        VALUES ('$id_user', '$username', '$nama', '$password', '$role', '$created_at')";
+        tb_user(id_user, username, email, nama, password, role, created_at) 
+        VALUES ('$id_user', '$username', '$email', '$nama', '$password', '$role', '$created_at')";
 
     mysqli_query($conn, $query);
+
+    return mysqli_affected_rows($conn);
+}
+
+function updateUser($data, $id_user) {
+    global $conn;
+
+    $nama = htmlspecialchars($data['nama']);
+    $email = htmlspecialchars($data['email']);
+    $role = htmlspecialchars($data['role']);
+
+    $query = "UPDATE tb_user SET
+        nama = '$nama',
+        email = '$email',
+        role = '$role' 
+        WHERE id_user = '$id_user'
+    ";
+
+    mysqli_query($conn, $query);
+
+    if (!empty($data['password'])) {
+        $password = password_hash(htmlspecialchars($data['password']), PASSWORD_DEFAULT);
+        mysqli_query($conn, "UPDATE tb_user SET password = '$password' WHERE id_user = '$id_user'");
+    }
 
     return mysqli_affected_rows($conn);
 }
@@ -44,6 +69,7 @@ function addUser($data) {
 function deleteUser($id_user)
 {
     global $conn;
+
     mysqli_query($conn, "DELETE FROM tb_user WHERE id_user = '$id_user'");
     
     return mysqli_affected_rows($conn);
@@ -54,7 +80,8 @@ function addIncomingLetter($data) {
     global $conn;
 
     $id_surat_masuk = uniqid();
-    $id_user = "69dc7e4c19f0e";
+    $id_user = htmlspecialchars($data['id_user']);
+
     $nomor_surat = htmlspecialchars($data['nomor_surat']);
     $nomor_agenda = query("SELECT COUNT(*) + 1 as nomor
                         FROM tb_surat_masuk
@@ -274,7 +301,8 @@ function addOutgoingLetter($data) {
     global $conn;
 
     $id_surat_keluar = uniqid();
-    $id_user = "69dc7e4c19f0e";
+    $id_user = htmlspecialchars($data['id_user']);
+
     $kode_kategori = htmlspecialchars($data['kode_surat']);
     $id_kategori = query("SELECT id_kategori 
         FROM tb_kategori 
